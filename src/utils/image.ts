@@ -94,13 +94,15 @@ export function extractImagePixelData(
     throw new Error('Failed to create canvas 2d context for image processing.');
   }
 
-  const scale = Math.max(targetSize / img.width, targetSize / img.height);
+  // Uniform contain scaling strategy to preserve exact aspect ratio without cropping
+  const scale = Math.min(targetSize / img.width, targetSize / img.height);
   const scaledWidth = img.width * scale;
   const scaledHeight = img.height * scale;
   const dx = (targetSize - scaledWidth) / 2;
   const dy = (targetSize - scaledHeight) / 2;
 
-  ctx.clearRect(0, 0, targetSize, targetSize);
+  ctx.fillStyle = '#09090b';
+  ctx.fillRect(0, 0, targetSize, targetSize);
   ctx.drawImage(img, dx, dy, scaledWidth, scaledHeight);
 
   const imageData = ctx.getImageData(0, 0, targetSize, targetSize);

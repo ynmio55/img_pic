@@ -103,20 +103,22 @@ export class ParticleEngine {
     const prevCount = this.config.particleCount;
     const prevAlgo = this.config.algorithm;
     const prevRes = this.config.resolution;
+    const prevSeed = this.config.seed;
 
     this.config = { ...this.config, ...newConfig };
     this.animController.setDuration(this.config.duration);
 
-    // Re-render current frame immediately for size/trail/randomness tweaks
+    // Re-render current frame immediately for Category A (render-only) tweaks
     if (this.currentParticles) {
       this.renderFrame(this.animController.getProgress());
     }
 
-    // Re-compute if count, algorithm, or resolution changed significantly
+    // Category B: Requires recomputation if count, algorithm, resolution, or seed changed
     if (
-      newConfig.particleCount !== undefined && newConfig.particleCount !== prevCount ||
-      newConfig.algorithm !== undefined && newConfig.algorithm !== prevAlgo ||
-      newConfig.resolution !== undefined && newConfig.resolution !== prevRes
+      (newConfig.particleCount !== undefined && newConfig.particleCount !== prevCount) ||
+      (newConfig.algorithm !== undefined && newConfig.algorithm !== prevAlgo) ||
+      (newConfig.resolution !== undefined && newConfig.resolution !== prevRes) ||
+      (newConfig.seed !== undefined && newConfig.seed !== prevSeed)
     ) {
       return true; // signal caller to re-process images
     }
@@ -167,10 +169,15 @@ export class ParticleEngine {
 
   public reset() {
     this.animController.reset();
+    this.currentParticles = null;
   }
 
   public seek(progress: number) {
     this.animController.setProgress(progress);
+  }
+
+  public setLooping(loop: boolean) {
+    this.animController.setLooping(loop);
   }
 
   public getProgress(): number {
