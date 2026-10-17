@@ -36,15 +36,7 @@ else
     exit 1
 fi
 
-# 6. Restart Cloudflare Tunnel if installed and configured
-if command -v cloudflared &> /dev/null; then
-    if [ -f "$HOME/.cloudflared/ascii-vision.yml" ]; then
-        echo "⚡ Restarting Cloudflare Tunnel (ascii-vision)..."
-        pkill -f "cloudflared" 2>/dev/null
-        nohup cloudflared tunnel --config "$HOME/.cloudflared/ascii-vision.yml" run ascii-vision > "$PROJECT_DIR/cloudflared.log" 2>&1 &
-        echo "✅ Cloudflare Tunnel started!"
-    fi
-fi
+# Note: Cloudflare Tunnel runs independently as a central service.
 
 echo "======================================================="
 echo "🎉 SmoothMorph is LIVE!"
